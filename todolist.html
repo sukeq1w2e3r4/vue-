@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>todolist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .war {
+            width: 500px;
+            height: 500px;
+            margin: 100px auto;
+            border: 2px solid #cecece;
+        }
+
+        h2 {
+            text-indent: 200px;
+        }
+
+        h3 {
+            float: left;
+        }
+
+        .one {
+            width: 400px;
+            height: 400px;
+            margin: 0 auto;
+            margin-top: 10px;
+        }
+
+        .none {
+            border: none;
+            outline: none;
+        }
+
+        .yang {
+            color: grey;
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="war">
+        <h2>任务列表</h2>
+        <hr>
+        <!--任务总数就是数组lists的长度-->
+        <h3>任务总数:{{lists.length}} 个 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h3>
+        <!-- 调用weiwan（）这个函数，通过排除，返回的就是未完成的个数 -->
+        <h3>还有【{{weiwan()}}】个未完成&nbsp;&nbsp;&nbsp;&nbsp;</h3>&nbsp;&nbsp;&nbsp;&nbsp;
+        <h3>【删除已完成】</h3><input type="button" value="删除" @click="shan"><br>
+        <div class="one">
+            <div class="two" v-for="(list,index) in lists">
+                <!--v-for 遍历lists ，list是数组的每一个元素，index是小标-->
+                <input type="checkbox" :style="top" v-model="list.checked">
+                <!--双向绑定list。checked-->                    <!--:class= "是一个json对象"-->
+                <input type="text" v-model="list.text" :class="{none:!list.no,yang:list.checked}" 
+                    :disabled="list.checked" @focus="jujiao(index)" @blur="shijiao(index)"><br> <!--disabled属性 用于input输入框是否被禁用-->
+            </div>
+            <input type="text" v-model="xinipt" @keyup="huiche"> <!--添加新内容的输入框，双向绑定data 一个新属性，传值的时候需要新属性的属性值-->
+            <input type="button" value=" 添加" @click="fn">
+        </div>
+    </div>
+    <script src="./js/vue.js"></script>
+    <script>
+        let vue = new Vue({
+            el: '.war',
+            data: {
+                xinipt: "",
+                'top': 'margin-top: 10px;',
+                lists: [{
+                        'checked': false,
+                        'text': '写js',
+                        'no': false
+                    },
+                    {
+                        'checked': false,
+                        'text': '写vue',
+                        'no': false
+                    },
+                    {
+                        'checked': false,
+                        'text': '写css',
+                        'no': false
+                    },
+                ]
+            },
+            methods: {
+                // 点击添加新元素 将新的一个对象插入到数组中去，并且text属性的值就是 添加新内容双向绑定元素
+                fn() {
+                    this.lists.push({
+                        'checked': false,
+                        'text': this.xinipt
+                    })
+                    this.xinipt = ''
+                },
+                //绑定回车键添加新内容
+                huiche(e) {
+                    if (e.keyCode === 13) {
+                        this.lists.push({
+                            'checked': false,
+                            'text': this.xinipt
+                        })
+                        this.xinipt = ''
+                    }
+                },
+                //聚焦，让文本框的输入框出来
+                jujiao(index) {
+                    this.lists[index].no = true
+                },
+                // 失焦，文本框消失
+                shijiao(index) {
+                    this.lists[index].no = false
+                },
+                shan() {
+                    // console.log(index);
+                    // for(var i = 0 ;i < this.lists.length; i++){
+                    //     if(this.lists.checked){
+                    //         this.lists.splice(index,1)
+                    //     }
+                    // }
+                    //通过filte 过滤掉 完成的内容
+                    this.lists = this.lists.filter(function (list) {
+                        return list.checked === false
+                    })
+
+                },
+                //返回未完成的个数，也就是过滤完完成的，剩下的未完成的数组长度
+                weiwan() {
+                    var m = 0
+                    for (var i = 0; i < this.lists.length; i++) {
+                        if (this.lists[i].checked === false) {
+                            m++
+                        }
+                    }
+                    return m
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
