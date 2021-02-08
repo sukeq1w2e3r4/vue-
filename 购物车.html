@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>购物车</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #table {
+            width: 500px;
+            /* border: 1px solid #cecece; */
+            margin: 100px auto;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        #table th {
+            height: 50px;
+            border: 1px solid #000000;
+            background-color: aquamarine;
+        }
+
+        #table td {
+            height: 50px;
+            border: 1px solid #000000;
+
+        }
+    </style>
+</head>
+
+<body>
+    <table id="table">
+        <thead>
+            <tr>
+                <th>
+                    全选 <input type="checkbox" :style="xua" v-model='qx' @change='qa()'>
+                </th>
+                <th>商品名称</th>
+                <th>数量</th>
+                <th>单价</th>
+                <th>小记</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr v-for="(shang,index) in shangs">
+                <td><input type="checkbox" :style="xua" v-model='shang.m' @change='danxuan()'></td>
+                <td>{{shang.name}}</td>
+                <td>
+                    <button :style="xua" @click='jian(index)'>-</button> <span id="shu">{{shang.shuliang}}</span>
+                    <button :style="xua" @click='add(index)'>+</button>
+                </td>
+                <td>单价：¥ <span id="danjia">{{shang.danjian}}</span></td>
+                <td>小记：¥ <span id="xiaoji">{{shang.xiaoji}}</span></td>
+                <td>操作：<button :style="dele" id='shan' @click='shan(index)'>删除</button></td>
+            </tr>
+            <tr>
+                <td colspan="6">商品一共共计<span>{{zongjian()}}</span>件，共计花费¥<span>{{zongqian()}}</span>元</td>
+            </tr>
+        </tbody>
+    </table>
+    <script src="./js/vue.js"></script>
+
+    <script>
+        let vue = new Vue({
+            el: '#table',
+            data: {
+                xua: 'width: 20px; height: 20px;',
+                dele: 'width: 50px; height: 20px;',
+                // 全选双绑的qx
+                qx: false,
+                shangs: [{
+                        m: false,
+                        'name': '水煮鱼',
+                        'shuliang': 0,
+                        'danjian': 22,
+                        'xiaoji': 0
+                    },
+                    {
+                        m: false,
+                        'name': '羊肉泡',
+                        'shuliang': 0,
+                        'danjian': 23,
+                        'xiaoji': 0
+                    },
+                    {
+                        m: false,
+                        'name': '肉夹馍',
+                        'shuliang': 0,
+                        'danjian': 12,
+                        'xiaoji': 0
+                    },
+                    {
+                        m: false,
+                        'name': '凉皮',
+                        'shuliang': 0,
+                        'danjian': 8,
+                        'xiaoji': 0
+                    },
+                    {
+                        m: false,
+                        'name': '炒拉条',
+                        'shuliang': 0,
+                        'danjian': 13,
+                        'xiaoji': 0
+                    }
+                ],
+
+            },
+            methods: {
+                // 加号事件
+                add(index) {
+                    this.shangs[index].shuliang++
+                    this.shangs[index].xiaoji = this.shangs[index].shuliang * this.shangs[index].danjian
+                },
+                // 减号事件
+                jian(index) {
+                    if (this.shangs[index].shuliang <= 0) {
+                        this.shangs[index].shuliang = 0
+                        return
+                    }
+                    this.shangs[index].shuliang--
+                    this.shangs[index].xiaoji = this.shangs[index].shuliang * this.shangs[index].danjian
+                },
+                // 全选事件
+                qa() {
+                    for (var i = 0; i < this.shangs.length; i++) {
+                        this.shangs[i].m =this.qx
+                    }
+                },
+                // 单选事件
+                danxuan(){
+                    let a = true
+                    for (var i = 0; i < this.shangs.length; i++) {
+                        if (!this.shangs[i].m) {
+                            a = false
+                            break
+                        }
+                    }
+                    this.qx = a
+                },
+                // 总件数
+                zongjian(){
+                    var zongj = 0 
+                    for (var i = 0; i < this.shangs.length; i++){
+                        if (this.shangs[i].m){
+                            zongj = zongj + this.shangs[i].shuliang 
+                        }
+                    }
+                    return zongj
+                },
+                // 总价
+                zongqian(){
+                    var money = 0 
+                    for (var i = 0; i < this.shangs.length; i++){
+                        if (this.shangs[i].m){
+                            money = money + this.shangs[i].shuliang *  this.shangs[i].danjian
+                        }
+                    }
+                    return money
+                },
+                // 删除
+                shan(index){
+                    this.shangs.splice(index,1)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
